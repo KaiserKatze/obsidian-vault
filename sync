@@ -1,0 +1,42 @@
+#!/bin/bash
+# 这个脚本是在开发者本地工作站使用的
+
+gitstatus=`git status --porcelain`
+
+# check if there are any changes in the local git repository
+if [ ${#gitstatus} -ne 0 ]
+then  # if there are changes
+
+	pid_ssh_agent=($(get_ssh_agent_pid))  # retrieve process ids of ssh agent
+	echo "[INFO] 正在运行的 SSH Agent 进程共计${#pid_ssh_agent[@]}个."
+	for ((i = 0; i < ${#pid_ssh_agent[@]}; i++)); do
+		kill -9 "${pid_ssh_agent[i]}" && echo "杀死 SSH Agent 进程(pid=${pid_ssh_agent[i]})."  # kill each existing ssh agent process
+	done
+	pid_ssh_agent=$(get_ssh_agent_pid)  # try to retrieve process ids of ssh agent once again
+	if [ -z "$pid_ssh_agent" ]; then  # verify if the playground is cleaned up
+		echo "[INFO] 成功创建 SSH Agent："  # recreate a new ssh agent
+		eval $(ssh-agent)
+	else
+		echo "[ERROR] 清理已有 SSH Agent 失败！"
+		exit 1  # unexpected error
+	fi
+	# plug in ssh private key
+	ssh-add
+	if [ $? -ne 0 ]; then
+		echo "[ERROR] 没有启动 SSH Agent 后台程序，或者无法添加 SSH 密匙!" 1>&2
+		exit 1
+	fi
+
+
+	# stages all changes
+	git add -A
+	# commits these changes
+	git commit -m "Update"
+	# rebases any changes from the remote repository
+	# to ensure there are no conflicts
+	git pull --rebase
+	# pushes the committed changes to the remote repository
+	for remote in $(git remote); do
+		git push $remote
+	done
+fi
