@@ -6,3 +6,5 @@
 	- 有没有必要学习一下射影几何、光学？
 	- 第4页底部 2.4 Geometric Interpretation 部分说，`This plane intersects the plane at infinity at a line`，这是什么意思？是指模型平面与像平面相交吗？
 	- 第6页中间提到“当 $n=1$ 时”与“头部姿态识别程序”有什么联系？对我来说，思维有点太跳跃了.
+	- 第6页末尾的 $\hat{m}$ 是一个映射吧？$R_i$ 是什么意思？是不是把旋转矩阵 $R$ 的列向量 $r_i$ 打错成大写字母了？【我想明白了，$R_i$ 表示第 $i$ 张图像对应的旋转矩阵】
+	- 第9页 5.1 Computer Simulations 为什么说 $\gamma=1.09083$ 相当于 $89.95^\circ$ 呢？【已解决，见[[像轴偏度]]】
