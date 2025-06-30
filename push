@@ -28,5 +28,5 @@ fi
 
 # pushes the committed changes to the remote repository
 for remote in $(git remote); do
-	git push $remote
+	git push -f $remote
 done
